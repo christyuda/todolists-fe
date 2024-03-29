@@ -151,6 +151,7 @@
             <label for="due_date">Due Date:</label>
             <input type="date" id="due_date" name="due_date">
             <input type="button" value="Add" id="addButton">
+            
         </form>
         <div class="button-container">
             <h3>ToDo</h3>
@@ -164,13 +165,30 @@
                     <th>Judul</th>
                     <th>Deskripsi</th>
                     <th>Due Date</th>
-                    <th>Completed</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="todoList">
+                
             </tbody>
         </table>
+        <button id="openUpdateModalButton" style="display: none;">Open Modal</button>
+        <div id="updateModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Update Task</h2>
+                <form id="updateTaskForm">
+                    <label for="updateJudul">Judul:</label>
+                    <input type="text" id="updateJudul" name="updateJudul">
+                    <label for="updateDeskripsi">Deskripsi:</label>
+                    <textarea id="updateDeskripsi" name="updateDeskripsi"></textarea>
+                    <label for="updateDueDate">Due Date:</label>
+                    <input type="date" id="updateDueDate" name="updateDueDate">
+                    <button type="button" id="updateTaskButton">Update</button>
+                </form>
+            </div>
+        </div>
     </div>
 
 </body>
