@@ -16,6 +16,8 @@ function FungsiGet() {
                     <td>
                         <button class="deleteButton" data-id="${task.id}">Delete</button>
                         <button class="updateButton" data-id="${task.id}">Update</button>
+                        <button onclick="selectTask(${task.id}, '${task.judul}', '${task.deskripsi}', '${task.due_date}')">Pilih</button>
+
                     </td>
                 `;
                 row.querySelector('.deleteButton').addEventListener('click', function() {
@@ -50,39 +52,28 @@ function openUpdateModal(taskId) {
     fetch(`http://127.0.0.1:3000/task/get/${taskId}`)
         .then(response => response.json())
         .then(data => {
-            
-            document.getElementById('updateJudul').value = data.judul;
-            document.getElementById('updateDeskripsi').value = data.deskripsi;
-            document.getElementById('updateDueDate').value = data.due_date;
-
-            
-            const updateButton = document.getElementById('updateButton');
-            updateButton.addEventListener('click', function() {
-                
-                const newJudul = document.getElementById('updateJudul').value;
-                const newDeskripsi = document.getElementById('updateDeskripsi').value;
-                const newDueDate = document.getElementById('updateDueDate').value;
-
-                const newData = {
-                    judul: newJudul,
-                    deskripsi: newDeskripsi,
-                    due_date: newDueDate
-                };
-
-
-                updateTask(taskId, newData);
-
-            });
+            document.getElementById('updateJudul').value = data.data.judul;
+            document.getElementById('updateDeskripsi').value = data.data.deskripsi
+            document.getElementById('updateTaskButton').setAttribute('data-id', taskId);
         })
         .catch(error => console.error('Error fetching task details:', error));
 }
 document.getElementById('updateTaskButton').addEventListener('click', function() {
-    
-    const taskId = document.getElementById('updateTaskId').value;
+    const newJudul = document.getElementById('updateJudul').value;
+    const newDeskripsi = document.getElementById('updateDeskripsi').value;
+    const newDueDate = document.getElementById('updateDueDate').value;
+
+    const taskId = document.getElementById('updateTaskButton').getAttribute('data-id');
+    const newData = {
+        judul: newJudul,
+        deskripsi: newDeskripsi,
+        due_date: newDueDate
+    };
+
     updateTask(taskId, newData);
 });
 function updateTask(id, newData) {
-    fetch(`http://127.0.0.1:3000/task//${id}`, {
+    fetch(`http://127.0.0.1:3000/task/update/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -92,8 +83,41 @@ function updateTask(id, newData) {
     .then(response => response.json())
     .then(result => {
         console.log('Data berhasil diupdate:', result);
-        fetchTodos(); // Setelah update, perbarui daftar tugas
+        FungsiGet();
     })
     .catch(error => console.error('Error updating data:', error));
 }
 FungsiGet();
+
+document.getElementById('addButton').addEventListener('click', function() {
+    
+    const judul = document.getElementById('judul').value;
+    const deskripsi = document.getElementById('deskripsi').value;
+    const due_date = document.getElementById('due_date').value;
+
+    
+    const newData = {
+        judul: judul,
+        deskripsi: deskripsi,
+        due_date: due_date
+    };
+
+    
+    postDataToInsert(newData);
+});
+
+function postDataToInsert(newData) {
+    fetch('http://127.0.0.1:3000/task/insert', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newData)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Data berhasil ditambahkan:', result);
+        FungsiGet(); 
+    })
+    .catch(error => console.error('Error adding data:', error));
+}
